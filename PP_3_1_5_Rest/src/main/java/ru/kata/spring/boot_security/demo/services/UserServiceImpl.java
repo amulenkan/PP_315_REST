@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.exception_handling.UserNotFoundException;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
@@ -37,7 +38,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).get();
+        Optional<User> foundUser = userRepository.findById(id);
+        return foundUser.orElseThrow(() ->
+                new UserNotFoundException(String.format("User with id = %d doesn't exist in system", id)));
     }
 
     @Override
@@ -47,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        userRepository.delete(userRepository.findById(id).get());
+        userRepository.delete(getUser(id));
     }
 
     @Override
