@@ -52,4 +52,9 @@ public class RESTController {
         userService.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<User> getUser() {
+        return new ResponseEntity<>(userService.getAuthUser(), HttpStatus.OK);
+    }
 }

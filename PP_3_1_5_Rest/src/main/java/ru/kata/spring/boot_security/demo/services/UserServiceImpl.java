@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.services;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,6 +53,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void deleteUser(Long id) {
         userRepository.delete(getUser(id));
+    }
+
+    @Override
+    public User getAuthUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(auth.getName());
     }
 
     @Override
