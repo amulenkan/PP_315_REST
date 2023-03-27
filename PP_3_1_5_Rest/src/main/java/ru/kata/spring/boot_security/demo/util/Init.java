@@ -40,8 +40,14 @@ public class Init {
                 "ivan", "100", adminSet);
         User user1 = new User("Mariya", "Petrova", 32L, "masha@mail.ru",
                 "masha", "100", userSet);
+        User user2 = new User("Valentina", "Churakova", 32L, "vvv@mail.ru",
+                "valya", "100", userSet);
+        User user3 = new User("Nikolay", "Petrov", 32L, "nik@mail.ru",
+                "nik", "100", userSet);
 
         userService.saveUser(admin);
         userService.saveUser(user1);
+        userService.saveUser(user2);
+        userService.saveUser(user3);
     }
 }

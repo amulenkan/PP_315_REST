@@ -19,7 +19,6 @@ import ru.kata.spring.boot_security.demo.services.RoleService;
 import javax.validation.Valid;
 import java.security.Principal;
 
-
 @Controller
 @RequestMapping("/admin")
 public class AdminController {

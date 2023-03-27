@@ -11,7 +11,7 @@
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <div class="d-flex align-items-center fs-4 text-white mb-0" id="user-navbar"></div>
+        <div class="navbar-brand text-white" th:align="left" id="user-navbar"></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-dark text-secondary">Logout</button>
         </form>

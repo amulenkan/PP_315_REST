@@ -73,8 +73,4 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return getRole();
     }
-
-    public String getRoleWithoutPrefix() {
-        return role.replaceAll("ROLE_", "");
-    }
 }

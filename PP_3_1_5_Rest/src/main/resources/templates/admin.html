@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Admin panel</title>
+    <title>Admin1 panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
           crossorigin="anonymous">
@@ -11,11 +11,7 @@
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <p class="navbar-brand text-white">
-            <b><span class="align-middle" th:text="${user.getUsername}"></span></b>
-            <span class="align-middle">with roles:</span>
-            <span class="align-middle" th:each="role: ${user.getRoles}" th:text="${role.getRoleWithoutPrefix()} + ' '"></span>
-        </p>
+        <div class="navbar-brand text-white" th:align="left" id="admin-navbar"></div>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-dark text-secondary">Logout</button>
         </form>
@@ -25,10 +21,10 @@
         <div class="row">
             <div class="p-0 col-2">
                 <div class="nav flex-column nav-pills pt-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link active" href="/admin" sec:authorize="hasRole('ROLE_ADMIN')" role="tab"
-                       aria-selected="true">Admin</a>
-                    <a class="nav-link" href="/user" sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" role="tab"
-                       aria-selected="false">User</a>
+                    <a class="nav-link active" href="/admin" id="admin-panel-btn" sec:authorize="hasRole('ROLE_ADMIN')"
+                       type="button" role="tab"  aria-selected="true">Admin</a>
+                    <a class="nav-link" href="#" id="user-nav-link" data-bs-toggle="tab" data-bs-target="#user-panel"
+                       type="button" role="tab" aria-controls="user-panel" aria-selected="false">User</a>
                 </div>
             </div>
             <div class="col-10 px-0">
@@ -58,7 +54,8 @@
                                             </div>
                                         </div>
                                             <div class="card-body">
-                                            <table class="table table-striped table-hover">
+                                            <table class="table table-striped table-hover" id="mainTableWithUsers">
+                                            <thead>
                                             <tr>
                                             <th scope="col">ID</th>
                                             <th scope="col">First name</th>
@@ -70,32 +67,13 @@
                                             <th scope="col">Edit</th>
                                             <th scope="col">Delete</th>
                                             </tr>
-                                            <tr th:each="user: ${users}">
-                                            <td th:text="${user.id}"/>
-                                            <td th:text="${user.name}"/>
-                                            <td th:text="${user.surname}"/>
-                                            <td th:text="${user.age}"/>
-                                            <td th:text="${user.email}"/>
-                                            <td th:text="${user.username}"/>
-                                            <td><th:block th:each="role: ${user.getRoles}"
-                                                          th:text="${role.getRoleWithoutPrefix()} + ' '"></th:block></td>
-                                            <td>
-                                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                                        data-bs-target="#modalEdit"
-                                                        th:data-bs-target="${'#modalEdit'+user.id}">Edit
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                                        data-bs-target="#modalDelete"
-                                                        th:data-bs-target="${'#modalDelete'+user.id}">Delete
-                                                </button>
-                                            </td>
-                                            <div class="modal fade" th:id="${'modalEdit'+user.id}">
+                                            </thead>
+                                            <tbody id="all-users-table"></tbody>
+
+                                            <div class="modal fade" id="modalEdit">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-                                                        <form id="formEdit" th:method="PATCH"
-                                                              th:action="@{/admin/{id}(id=${user.id})}" th:object="${user}">
+                                                        <form id="formEdit">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Edit user</h5>
                                                                 <button type="button" class="btn-close"
@@ -105,12 +83,12 @@
                                                                 <div class="form-group required">
                                                                     <div class="controls">
                                                                         <p>
-                                                                            <label for="idEditUser">
+                                                                            <label for="editId">
                                                                                 <b>ID</b>
                                                                                 <input class="form-control" th:type="number"
                                                                                        th:name="id"
-                                                                                       id="idEditUser"
-                                                                                       th:value="${user.id}" disabled>
+                                                                                       id="editId"
+                                                                                        disabled>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -120,7 +98,7 @@
                                                                                        th:name="name"
                                                                                        id="editFirstName"
                                                                                        placeholder="First name"
-                                                                                       th:value="${user.name}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -130,7 +108,7 @@
                                                                                        th:name="surname"
                                                                                        id="editLastName"
                                                                                        placeholder="Last name"
-                                                                                       th:value="${user.surname}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -140,7 +118,7 @@
                                                                                        th:name="age"
                                                                                        id="editAge"
                                                                                        placeholder="Age"
-                                                                                       th:value="${user.age}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -150,7 +128,7 @@
                                                                                        th:name="email"
                                                                                        id="editEmail"
                                                                                        placeholder="Email"
-                                                                                       th:value="${user.email}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -160,7 +138,7 @@
                                                                                        th:name="username"
                                                                                        id="editUsername"
                                                                                        placeholder="Username"
-                                                                                       th:value="${user.username}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -170,7 +148,7 @@
                                                                                        th:name="password"
                                                                                        id="editPassword"
                                                                                        placeholder="Password"
-                                                                                       th:value="${user.password}" required>
+                                                                                       required>
                                                                             </label>
                                                                         </p>
                                                                         <label class="container-fluid col-6"
@@ -179,11 +157,8 @@
                                                                             <select id="editRoles" class="form-select"
                                                                                     name="roles"
                                                                                     multiple size="2" required>
-                                                                                <option th:each="role: ${roles}"
-                                                                                        th:value="${role.getId()}" >
-                                                                                    <th:block th:text="${role.getRoleWithoutPrefix()}">
-                                                                                    </th:block>
-                                                                                </option>
+                                                                                    <option value="ADMIN">ADMIN</option>
+                                                                                    <option value="USER" selected>USER</option>
                                                                             </select>
                                                                         </label>
                                                                     </div>
@@ -192,7 +167,7 @@
                                                                                 class="btn btn-secondary"
                                                                                 data-bs-dismiss="modal">Close
                                                                         </button>
-                                                                        <button type="submit" class="btn btn-primary">Edit
+                                                                        <button type="submit" class="btn btn-primary" id="edit-user-save-btn">Edit
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -201,13 +176,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="modal fade" th:id="${'modalDelete'+user.id}" tabindex="-1"
+                                            <div class="modal fade" id="modalDelete" tabindex="-1"
                                                  aria-labelledby="edit"
                                                  aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
-                                                        <form id="formDelete" th:method="DELETE"
-                                                              th:action="@{/admin/{id}/delete(id=${user.id})}" th:object="${user}">
+                                                        <form id="formDelete"
+                                                              >
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title">Delete user</h5>
                                                                 <button type="button" class="btn-close"
@@ -217,12 +192,12 @@
                                                                 <div class="form-group required">
                                                                     <div class="controls">
                                                                         <p>
-                                                                            <label for="idDelete">
+                                                                            <label for="deleteId">
                                                                                 <b>ID</b>
                                                                                 <input class="form-control" th:type="number"
-                                                                                       id="idDelete" disabled
+                                                                                       id="deleteId" disabled
                                                                                        th:name="id"
-                                                                                       th:value="${user.id}">
+                                                                                       >
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -231,7 +206,7 @@
                                                                                 <input class="form-control" th:type="text"
                                                                                        id="deleteFirstName" disabled
                                                                                        th:name="name"
-                                                                                       th:value="${user.name}">
+                                                                                       >
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -240,7 +215,7 @@
                                                                                 <input class="form-control" th:type="text"
                                                                                        id="deleteLastName" disabled
                                                                                        th:name="surname"
-                                                                                       th:value="${user.surname}">
+                                                                                       >
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -249,7 +224,7 @@
                                                                                 <input class="form-control" th:type="number"
                                                                                        id="deleteAge"
                                                                                        th:name="age"
-                                                                                       th:value="${user.age}" disabled>
+                                                                                        disabled>
                                                                             </label>
                                                                         </p>
                                                                         <p>
@@ -258,7 +233,7 @@
                                                                                 <input class="form-control" th:type="email"
                                                                                        id="deleteEmail" disabled
                                                                                        th:name="email"
-                                                                                       th:value="${user.email}">
+                                                                                       >
                                                                             </label>
                                                                         </p>
                                                                         <label class="container-fluid col-6"
@@ -266,10 +241,8 @@
                                                                             <b>Role</b>
                                                                             <select id="deleteRoles" class="form-select"
                                                                                     multiple size="2" disabled>
-                                                                                <option th:each="role: ${user.roles}">
-                                                                                    <th:block th:text="${role}">
-                                                                                    </th:block>
-                                                                                </option>
+                                                                                <option value="ADMIN">ADMIN</option>
+                                                                                <option value="USER" >USER</option>
                                                                             </select>
                                                                         </label>
                                                                     </div>
@@ -278,7 +251,8 @@
                                                                                 class="btn btn-secondary"
                                                                                 data-bs-dismiss="modal">Close
                                                                         </button>
-                                                                        <button type="submit" class="btn btn-danger">Delete
+                                                                        <button type="submit" class="btn btn-danger"
+                                                                                id="confirmDeleteBtn">Delete
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -302,40 +276,36 @@
                                              </div>
                                                 <div class="card-body text-center">
                                                     <div class="d-grid gap-2 col-4 mx-auto">
-                                                    <form method="POST" th:action="@{admin/saveUser}" th:object="${newUser}">
+                                                    <form id="newUserForm">
                                                         <label for="name"><b>First name</b></label><br>
-                                                        <input class="form-control" type="text" th:field="*{name}" id="name"
+                                                        <input class="form-control" type="text" id="name"
                                                                placeholder="First name" required>
                                                         <br>
                                                         <label for="surname"><b>Last name</b></label><br>
-                                                        <input class="form-control" type="text" th:field="*{surname}" id="surname"
+                                                        <input class="form-control" type="text" id="surname"
                                                                placeholder="Last name" required>
                                                         <br>
                                                         <label for="age"><b>Age</b></label><br>
-                                                        <input class="form-control" type="number" th:field="*{age}" id="age"
+                                                        <input class="form-control" type="number" id="age"
                                                                placeholder="Age" required>
                                                         <br>
                                                         <label for="email"><b>Email</b></label><br>
-                                                        <input class="form-control" type="email" th:field="*{email}" id="email"
+                                                        <input class="form-control" type="email" id="email"
                                                                placeholder="Email" required>
                                                         <br>
                                                         <label for="username"><b>Username</b></label><br>
-                                                        <input class="form-control" autocomplete="new-username" type="text" th:field="*{username}" id="username"
+                                                        <input class="form-control" autocomplete="new-username" type="text" id="username"
                                                                placeholder="Username" required>
                                                         <br>
                                                         <label for="password"><b>Password</b></label><br>
-                                                        <input class="form-control" autocomplete="new-password" type="password" th:field="*{password}" id="password"
+                                                        <input class="form-control" autocomplete="new-password" type="password" id="password"
                                                                placeholder="Password" required>
                                                         <br>
-                                                        <label for="role"><b>Role</b></label><br>
-                                                        <select id="role" class="form-select"
-                                                                name="roles"
+                                                        <label for="newRole"><b>Role</b></label><br>
+                                                        <select id="newRole" class="form-select"
                                                                 multiple size="2" required>
-                                                            <option th:each="role: ${roles}"
-                                                                    th:value="${role.getId()}" >
-                                                                <th:block th:text="${role.getRoleWithoutPrefix()}">
-                                                                </th:block>
-                                                            </option>
+                                                            <option value="ADMIN">ADMIN</option>
+                                                            <option value="USER" selected>USER</option>
                                                         </select>
                                                         <br>
                                                         </button>
@@ -349,6 +319,32 @@
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane fane" id="user-panel" style="display:none" role="tabpanel"
+                         aria-labelledby="user-nav-link" tabindex="0">
+                        <h1 class="m-3 fw-bold">User information page</h1>
+                        <div class="tab-content" role="tabpanel" aria-labelledby="admin-nav-link">
+                            <div class="tab-pane fade show active" role="tabpanel" tabindex="0">
+                                <div class="card rounded-0">
+                                    <h5 class="card-header">About user</h5>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">First Name</th>
+                                            <th scope="col">Last Name</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Role</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="data-user">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -356,5 +352,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="../js/admin.js" th:src="@{/js/admin.js}"></script>
 </body>
 </html>

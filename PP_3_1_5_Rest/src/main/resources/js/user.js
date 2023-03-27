@@ -17,7 +17,7 @@ function userInfo() {
             <td>${user.roles.map(role => role.role.replaceAll("ROLE_", "")).join(' ')}</td> 
             </tr>`;
             data.innerHTML = row;
-            panel.innerHTML = `<div><b>${user.username}</b>  with roles: ${user.roles.map(role => role.role.replaceAll("ROLE_", "")).join(' ')}</div>`
+            panel.innerHTML = `<b>${user.username}</b>  with roles: ${user.roles.map(role => role.role.replaceAll("ROLE_", "")).join(', ')}`
         });
 }
 
