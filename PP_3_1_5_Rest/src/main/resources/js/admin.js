@@ -1,5 +1,4 @@
 const panel = document.getElementById("admin-navbar");
-const data = document.getElementById("data-user");
 const addForm = document.getElementById("newUserForm");
 const url = 'http://localhost:9090/api/users/';
 const urlForPanel = 'http://localhost:9090/api/user';
